@@ -37,43 +37,63 @@ const Dashboard = {
         if (!user) return;
 
         try {
-        // Fetch data from DB o asignar default
-        const doc = await db.collection('users').doc(user.uid).get();
-        Dashboard.data = doc.exists ? doc.data() : { 
-            name: "Nuevo Usuario", 
-            bio: "¡Hola! Soy nuevo aquí.", 
-            links: [], 
-            theme: "default", 
-            username: user.email.split('@')[0],
-            photoURL: ''
-        };
+            // Fetch data from DB
+            const doc = await db.collection('users').doc(user.uid).get();
+            
+            if (doc.exists) {
+                const remoteData = doc.data();
+                // Aseguramos que existan todos los campos necesarios para evitar crashes
+                Dashboard.data = {
+                    name: remoteData.name || "Usuario",
+                    bio: remoteData.bio || "",
+                    links: remoteData.links || [],
+                    gallery: remoteData.gallery || [],
+                    theme: remoteData.theme || "default",
+                    username: remoteData.username || user.email.split('@')[0],
+                    photoURL: remoteData.photoURL || ''
+                };
+            } else {
+                // Si el documento por alguna razón no existe, creamos un estado inicial seguro
+                Dashboard.data = { 
+                    name: "Nuevo Usuario", 
+                    bio: "¡Hola! Soy nuevo aquí.", 
+                    links: [], 
+                    gallery: [],
+                    theme: "default", 
+                    username: user.email ? user.email.split('@')[0] : 'user',
+                    photoURL: ''
+                };
+            }
 
-        const appContainer = document.getElementById('app-container');
-        appContainer.innerHTML = `
-            <div class="dashboard-container">
-                <!-- Sidebar de Navegación Fija -->
-                <aside class="dashboard-sidebar glass">
-                    <h3>Dashboard</h3>
-                    <nav class="sidebar-nav">
-                        <button onclick="Dashboard.changeTab('links')" id="tab-links" class="tab-btn active"><i data-lucide="link"></i> Mis Enlaces</button>
-                        <button onclick="Dashboard.changeTab('profile')" id="tab-profile" class="tab-btn"><i data-lucide="user"></i> Mi Perfil</button>
-                        <button onclick="Dashboard.changeTab('vip')" id="tab-vip" class="tab-btn"><i data-lucide="zap"></i> Herramientas VIP</button>
-                        <button onclick="Dashboard.changeTab('settings')" id="tab-settings" class="tab-btn"><i data-lucide="shield-check"></i> Ajustes de Cuenta</button>
-                    </nav>
-                </aside>
-
-                <!-- Área de Contenido Central -->
-                <main class="dashboard-content" id="tab-content" style="position:relative;">
-                    <div class="loader" style="text-align:center; padding: 2rem;">Cargando interfaz...</div>
-                </main>
-            </div>
-        `;
-        
-        // Renderizar pestaña por defecto
-        Dashboard.changeTab('links');
+            const appContainer = document.getElementById('app-container');
+            // ... resto del renderizado igual ...
+            appContainer.innerHTML = `
+                <div class="dashboard-container">
+                    <aside class="dashboard-sidebar glass">
+                        <h3>Dashboard</h3>
+                        <nav class="sidebar-nav">
+                            <button onclick="Dashboard.changeTab('links')" id="tab-links" class="tab-btn active"><i data-lucide="link"></i> Mis Enlaces</button>
+                            <button onclick="Dashboard.changeTab('profile')" id="tab-profile" class="tab-btn"><i data-lucide="user"></i> Mi Perfil</button>
+                            <button onclick="Dashboard.changeTab('vip')" id="tab-vip" class="tab-btn"><i data-lucide="zap"></i> Herramientas VIP</button>
+                            <button onclick="Dashboard.changeTab('settings')" id="tab-settings" class="tab-btn"><i data-lucide="shield-check"></i> Ajustes de Cuenta</button>
+                        </nav>
+                    </aside>
+                    <main class="dashboard-content" id="tab-content" style="position:relative;">
+                        <div class="loader" style="text-align:center; padding: 2rem;">Cargando interfaz...</div>
+                    </main>
+                </div>
+            `;
+            
+            Dashboard.changeTab('links');
         } catch (err) {
-            console.error('Error al cargar dashboard:', err);
-            document.getElementById('app-container').innerHTML = '<p style="text-align:center; padding:3rem; color:var(--text-dim);">Error al cargar el panel. Verifica tu conexión.</p>';
+            console.error('CRITICAL ERROR LOADING DASHBOARD:', err);
+            document.getElementById('app-container').innerHTML = `
+                <div style="text-align:center; padding:3rem; color:var(--text-dim);">
+                    <p>Error al cargar el panel.</p>
+                    <small style="display:block; margin-top:1rem; opacity:0.7;">Detalle técnico: ${err.message}</small>
+                    <button onclick="location.reload()" class="btn-secondary" style="margin-top:1rem;">Reintentar</button>
+                </div>
+            `;
         }
     },
 
