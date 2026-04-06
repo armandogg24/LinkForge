@@ -69,6 +69,12 @@ const Profile = {
             </div>
         `;
 
-        lucide.createIcons();
+        if (window.lucide) {
+            lucide.createIcons();
+        } else {
+            setTimeout(() => {
+                if (window.lucide) lucide.createIcons();
+            }, 500);
+        }
     }
 };

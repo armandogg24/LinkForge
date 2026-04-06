@@ -98,22 +98,38 @@ const Dashboard = {
     },
 
     changeTab: (tabName) => {
-        // Actualizar estados .active visuales
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('tab-' + tabName).classList.add('active');
+        try {
+            // Actualizar estados .active visuales
+            const tabs = document.querySelectorAll('.tab-btn');
+            if (tabs.length > 0) {
+                tabs.forEach(btn => btn.classList.remove('active'));
+                const targetTab = document.getElementById('tab-' + tabName);
+                if (targetTab) targetTab.classList.add('active');
+            }
 
-        const content = document.getElementById('tab-content');
-        
-        // Ruteros internos
-        switch(tabName) {
-            case 'links': Dashboard.renderTabLinks(content); break;
-            case 'profile': Dashboard.renderTabProfile(content); break;
-            case 'vip': Dashboard.renderTabVIP(content); break;
-            case 'settings': Dashboard.renderTabSettings(content); break;
+            const content = document.getElementById('tab-content');
+            if (!content) return;
+            
+            // Ruteros internos
+            switch(tabName) {
+                case 'links': Dashboard.renderTabLinks(content); break;
+                case 'profile': Dashboard.renderTabProfile(content); break;
+                case 'vip': Dashboard.renderTabVIP(content); break;
+                case 'settings': Dashboard.renderTabSettings(content); break;
+            }
+
+            // Refrescar íconos con sistema de reintento
+            if (window.lucide) {
+                lucide.createIcons();
+            } else {
+                console.warn('Lucide no cargó a tiempo, reintentando en 1s...');
+                setTimeout(() => {
+                    if (window.lucide) lucide.createIcons();
+                }, 1000);
+            }
+        } catch (err) {
+            console.error('Error al cambiar de pestaña:', err);
         }
-
-        // Refrescar íconos en el DOM nuevo
-        lucide.createIcons();
     },
 
     /* ----------------------------------------------------
