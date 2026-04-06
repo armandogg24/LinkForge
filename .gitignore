@@ -1,0 +1,18 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencias (si las agregas en el futuro)
+node_modules/
+
+# Archivos de configuración local de agentes
+.gemini/
+.cursorrules
+.cursor/
