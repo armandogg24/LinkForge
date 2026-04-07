@@ -238,7 +238,7 @@ const Dashboard = {
                 <label style="color:var(--text-dim); font-size:0.85rem; margin-left: 0.5rem;">Biografía u ocupación</label>
                 <textarea id="edit-bio" placeholder="Cuenta un poco sobre ti" class="input-field" style="min-height: 120px;">${escapeHTML(data.bio)}</textarea>
                 
-                <button id="save-profile" class="btn-primary w-full">Guardar Perfil Permanentemente</button>
+                <button id="save-profile" class="btn-primary w-full">Guardar</button>
             </div>
         `;
 
