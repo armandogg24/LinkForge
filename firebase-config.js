@@ -11,6 +11,8 @@ const firebaseConfig = {
   appId: "1:679798323201:web:9f47bba9ef51b8993ee800"
 };
 
+const WORKER_URL = "https://linkstack.armandogonzalez-dev.workers.dev/";
+
 // Inicialización de Firebase
 firebase.initializeApp(firebaseConfig);
 

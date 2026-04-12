@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.png" alt="LinkStack Banner" width="100%">
+  <img src="banner.png" alt="LinkForge Banner" width="100%">
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@
 
 ## 📋 Descripción
 
-**LinkStack** es una alternativa open-source a Linktree, construida con HTML, CSS y JavaScript puro (sin frameworks). Permite a cualquier persona crear su página de enlaces personalizada con:
+**LinkForge** es una alternativa open-source a Linktree, construida con HTML, CSS y JavaScript puro (sin frameworks). Permite a cualquier persona crear su página de enlaces personalizada con:
 
 - 🎨 Diseño **Glassmorphism** premium
 - 🔐 Seguridad de nivel empresarial (XSS-proof, transacciones atómicas)
@@ -33,7 +33,7 @@
 | Característica | Descripción |
 |---|---|
 | 🔗 **Gestión de Enlaces** | Crea, elimina y organiza hasta 20 enlaces con íconos personalizados |
-| 👤 **Perfil Público** | Nombre, bio, foto de perfil y URL personalizada (`/linkstack/?u=tu_nombre`) |
+| 👤 **Perfil Público** | Nombre, bio, foto de perfil y URL personalizada (`/?u=tu_nombre`) |
 | 🖼️ **Galería de Fotos** | Sube hasta 30 imágenes a tu muro público |
 | 🎬 **YouTube Embed** | Los enlaces de YouTube se renderizan automáticamente como reproductores |
 | 🎨 **Temas Visuales** | 3 paletas premium: Basalto, Nebula y Midnight |
@@ -65,8 +65,8 @@
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/armandogg24/LinkStack.git
-cd LinkStack
+git clone https://github.com/armandogg24/LinkForge.git
+cd LinkForge
 ```
 
 ### 2. Configurar Firebase
@@ -115,7 +115,7 @@ service cloud.firestore {
 
 1. Crea un Worker en [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. Guarda tu API Key de ImgBB como secret: `wrangler secret put IMGBB_API_KEY`
-3. Actualiza la URL del Worker en `dashboard.js` línea 3
+3. Actualiza la URL del Worker en `firebase-config.js`
 
 ### 5. Abrir localmente
 
@@ -126,7 +126,7 @@ Abre `index.html` con Live Server (VS Code) o cualquier servidor local. ¡Listo!
 ## 📁 Estructura del Proyecto
 
 ```
-LinkStack/
+LinkForge/
 ├── index.html          # Punto de entrada principal
 ├── style.css           # Diseño Glassmorphism completo
 ├── firebase-config.js  # Configuración Firebase + utilidades de seguridad
@@ -143,7 +143,7 @@ LinkStack/
 
 ## 🔒 Seguridad
 
-LinkStack ha pasado por una **auditoría de seguridad multicapa** que incluye:
+LinkForge ha pasado por una **auditoría de seguridad multicapa** que incluye:
 
 - ✅ **Anti-XSS**: `escapeHTML()` en todos los puntos de renderizado
 - ✅ **Anti-Inyección URL**: `safeURL()` bloquea protocolos `javascript:` y `data:`
@@ -158,7 +158,7 @@ LinkStack ha pasado por una **auditoría de seguridad multicapa** que incluye:
 
 ## 🤝 Contribuir
 
-¡Las contribuciones son bienvenidas! Si quieres mejorar LinkStack:
+¡Las contribuciones son bienvenidas! Si quieres mejorar LinkForge:
 
 1. Haz fork del repositorio
 2. Crea una rama para tu feature (`git checkout -b feature/mi-mejora`)

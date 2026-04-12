@@ -53,7 +53,7 @@ const Auth = {
             
             <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); text-align: center;">
                 <p class="auth-switch" style="color: var(--text-dim); font-size: 0.95rem;">
-                    ${isLogin ? '¿Aún no tienes tu LinkStack?' : '¿Ya tienes una cuenta?'} 
+                    ${isLogin ? '¿Aún no tienes tu LinkForge?' : '¿Ya tienes una cuenta?'} 
                     <br>
                     <a href="#" id="switch-auth" style="color: var(--primary-light); font-weight: 600; display: inline-block; margin-top: 0.5rem;">
                         ${isLogin ? 'Regístrate gratis' : 'Inicia sesión aquí'}
@@ -112,18 +112,18 @@ const Auth = {
             if (isLogin) {
                 auth.signInWithEmailAndPassword(email, password)
                     .then(() => Auth.closeModal())
-                    .catch(err => alert('Error al iniciar sesión: ' + err.message));
+                    .catch(err => showToast('Error al iniciar sesión: ' + err.message, 'error'));
             } else {
                 const username = document.getElementById('username').value.toLowerCase();
 
                 if (username.length < 3) {
-                    return alert('El nombre de usuario debe tener al menos 3 caracteres.');
+                    return showToast('El nombre de usuario debe tener al menos 3 caracteres.', 'error');
                 }
 
                 // Verificación visual previa (la definitiva es la transacción)
                 const taken = await Auth.isUsernameTaken(username);
                 if (taken) {
-                    return alert('Ese nombre de usuario ya está ocupado. Por favor elige otro.');
+                    return showToast('Ese nombre de usuario ya está ocupado. Por favor elige otro.', 'error');
                 }
 
                 try {
@@ -140,7 +140,7 @@ const Auth = {
                             transaction.set(userRef, {
                                 name: username,
                                 username: username,
-                                bio: '¡Hola! Soy nuevo en Link Stack.',
+                                bio: '¡Hola! Soy nuevo en Link Forge.',
                                 links: [],
                                 gallery: [],
                                 theme: 'default',
@@ -151,16 +151,16 @@ const Auth = {
                     } catch (txErr) {
                         await cred.user.delete();
                         if (txErr.message === 'NOMBRE_OCUPADO') {
-                            return alert('Ese nombre fue tomado en este preciso instante. Intenta con otro.');
+                            return showToast('Ese nombre fue tomado en este preciso instante. Intenta con otro.', 'error');
                         }
                         throw txErr;
                     }
 
                     await cred.user.sendEmailVerification();
-                    alert(`¡Cuenta creada! Hemos enviado un enlace de verificación a ${email}.`);
+                    showToast(`¡Cuenta creada! Verifica tu correo: ${email}`, 'success');
                     Auth.closeModal();
                 } catch (err) {
-                    alert('Error al registrarse: ' + err.message);
+                    showToast('Error al registrarse: ' + err.message, 'error');
                 }
             }
         });

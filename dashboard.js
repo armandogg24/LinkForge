@@ -1,7 +1,5 @@
 // dashboard.js - Gestión del Perfil de Usuario
 
-const WORKER_URL = "https://linkstack.armandogonzalez-dev.workers.dev/";
-
 async function uploadImageToExternal(file, customName = "") {
     const user = auth.currentUser;
     if (!user) throw new Error("Acceso denegado: Primero debes iniciar sesión.");
@@ -22,7 +20,7 @@ async function uploadImageToExternal(file, customName = "") {
             "Authorization": `Bearer ${idToken}` // 👈 Token seguro e invisible para hackers
         }
     });
-    if (!res.ok) throw new Error("Error de Seguridad: Solo usuarios de LinkStack pueden usar este servicio.");
+    if (!res.ok) throw new Error("Error de Seguridad: Solo usuarios de LinkForge pueden usar este servicio.");
 
     const data = await res.json();
     if (data.success) return data.data.url;
@@ -213,7 +211,7 @@ const Dashboard = {
     renderTabProfile: (container) => {
         const data = Dashboard.data;
         container.innerHTML = `
-            <h3>Mi LinkStack</h3>
+            <h3>Mi LinkForge</h3>
             <div class="profile-upload-container" style="border:none; padding-bottom: 0; display: flex; align-items: center; gap: 1.5rem;">
                 <div id="profile-preview-container">
                     ${data.photoURL 
@@ -276,13 +274,13 @@ const Dashboard = {
         document.getElementById('btn-copy-wa').onclick = async () => {
             const phone = document.getElementById('wa-phone').value.replace(/[^0-9]/g, '');
             const text = document.getElementById('wa-text').value;
-            if(!phone) { alert('Por favor, ingresa un número de teléfono válido.'); return; }
+            if(!phone) { showToast('Por favor, ingresa un número de teléfono válido.', 'error'); return; }
             const link = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
             try {
                 await navigator.clipboard.writeText(link);
-                alert('¡Enlace copiado al portapapeles!');
+                showToast('¡Enlace copiado al portapapeles!', 'success');
             } catch {
-                prompt('No se pudo copiar automáticamente. Copia este enlace:', link);
+                showToast('Copia este enlace: ' + link, 'info');
             }
         };
 
@@ -293,18 +291,18 @@ const Dashboard = {
             const user = auth.currentUser;
             const doc = await db.collection('users').doc(user.uid).get();
             const gallery = doc.exists ? doc.data().gallery || [] : [];
-            if (gallery.length >= 30) { alert('Has alcanzado el límite de 30 imágenes en tu galería.'); return; }
+            if (gallery.length >= 30) { showToast('Has alcanzado el límite de 30 imágenes en tu galería.', 'error'); return; }
             const username = Dashboard.data.username;
             
-            alert('Enviando capa fotográfica a la nube secreta...');
+            showToast('Enviando imagen a la nube...', 'info');
             try {
-                const imgName = `LinkStack_Galeria_${username}_${Date.now()}`;
+                const imgName = `LinkForge_Galeria_${username}_${Date.now()}`;
                 const externalUrl = await uploadImageToExternal(file, imgName);
                 gallery.push(externalUrl);
                 await db.collection('users').doc(user.uid).update({ gallery });
-                alert('¡Imagen procesada y enviada a tu galería pública correctamente!');
+                showToast('¡Imagen enviada a tu galería correctamente!', 'success');
             } catch (err) {
-                alert('Error al subir la fotografía: ' + err.message);
+                showToast('Error al subir la fotografía: ' + err.message, 'error');
             }
         };
     },
@@ -344,7 +342,7 @@ const Dashboard = {
             const theme = document.getElementById('edit-theme').value;
             await db.collection('users').doc(auth.currentUser.uid).set({ theme }, { merge: true });
             Dashboard.data.theme = theme; // Actualizar cache local
-            alert('¡El diseño externo de tu página ha cambiado!');
+            showToast('¡El diseño externo de tu página ha cambiado!', 'success');
         };
     },
 
@@ -357,17 +355,19 @@ const Dashboard = {
         if (!file) return;
 
         const user = auth.currentUser;
+        if (!user) return;
+        
         try {
-            alert('Enviando y encriptando imagen vía Cloudflare...');
-            const imgName = `LinkStack_Perfil_${Dashboard.data.username}`;
+            showToast('Enviando y encriptando imagen vía Cloudflare...', 'info');
+            const imgName = `LinkForge_Perfil_${Dashboard.data.username}`;
             const externalUrl = await uploadImageToExternal(file, imgName);
             
             await db.collection('users').doc(user.uid).update({ photoURL: externalUrl });
             document.getElementById('profile-preview-container').innerHTML = `<img src="${externalUrl}" id="profile-preview" class="profile-img-small">`;
-            Dashboard.renderTabProfile(document.getElementById('tab-content')); // Re-render to show delete button
-            alert('¡Foto de rostro procesada con brillantez!');
+            Dashboard.renderTabProfile(document.getElementById('tab-content'));
+            showToast('¡Foto de perfil actualizada!', 'success');
         } catch (err) {
-            alert('Error al subir avatar: ' + err.message);
+            showToast('Error al subir avatar: ' + err.message, 'error');
         }
     },
 
@@ -378,9 +378,9 @@ const Dashboard = {
             await db.collection('users').doc(user.uid).update({ photoURL: '' });
             Dashboard.data.photoURL = '';
             Dashboard.renderTabProfile(document.getElementById('tab-content'));
-            alert('Foto de perfil eliminada.');
+            showToast('Foto de perfil eliminada.', 'success');
         } catch (err) {
-            alert('Error al eliminar foto: ' + err.message);
+            showToast('Error al eliminar foto: ' + err.message, 'error');
         }
     },
 
@@ -390,7 +390,7 @@ const Dashboard = {
         const newUsername = document.getElementById('edit-username').value.toLowerCase().trim().replace(/[^a-z0-9_.]/g, '');
         const bio = document.getElementById('edit-bio').value.trim();
 
-        if (newUsername.length < 3) return alert('El sistema exige que tu nombre público tenga al menos 3 caracteres.');
+        if (newUsername.length < 3) return showToast('El nombre público debe tener al menos 3 caracteres.', 'error');
 
         const currentUsername = Dashboard.data.username;
         if (newUsername !== currentUsername) {
@@ -407,8 +407,8 @@ const Dashboard = {
                     }, { merge: true });
                 });
             } catch (txErr) {
-                if (txErr.message === 'NOMBRE_OCUPADO') return alert(`El nombre /?u=${newUsername} ya está reservado.`);
-                return alert('Error al cambiar nombre: ' + txErr.message);
+                if (txErr.message === 'NOMBRE_OCUPADO') return showToast(`El nombre /?u=${newUsername} ya está reservado.`, 'error');
+                return showToast('Error al cambiar nombre: ' + txErr.message, 'error');
             }
         } else {
             await db.collection('users').doc(user.uid).set({
@@ -420,7 +420,7 @@ const Dashboard = {
         Dashboard.data.username = newUsername;
         Dashboard.data.bio = bio;
 
-        alert('¡Cambios aplicados correctamente. Estás listo!');
+        showToast('¡Cambios guardados correctamente!', 'success');
     },
 
     addLink: async (e) => {
@@ -431,28 +431,27 @@ const Dashboard = {
         const iconSelect = document.getElementById('link-icon').value;
         let icon = iconSelect;
 
-        if (Dashboard.data.links.length >= 20) return alert('Máximo 20 enlaces permitidos.');
+        if (Dashboard.data.links.length >= 20) return showToast('Máximo 20 enlaces permitidos.', 'error');
 
         if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
 
-        // Validar que la URL sea segura
-        if (safeURL(url) === '#') return alert('URL no válida. Solo se permiten enlaces http/https.');
+        if (safeURL(url) === '#') return showToast('URL no válida. Solo se permiten enlaces http/https.', 'error');
 
         if (iconSelect === 'custom') {
             const fileInput = document.getElementById('custom-icon-file').files[0];
-            if (!fileInput) return alert('Debes elegir qué gráfico/logo de la PC vas usar para ese enlace');
+            if (!fileInput) return showToast('Debes elegir un ícono de tu PC', 'error');
             
             const btnSubmit = e.target.querySelector('button[type="submit"]');
             btnSubmit.disabled = true;
-            btnSubmit.textContent = 'Tratando icono remoto...';
+            btnSubmit.textContent = 'Subiendo icono...';
             
             try {
-                const imgName = `LinkStack_Icono_${Dashboard.data.username}_${Date.now()}`;
+                const imgName = `LinkForge_Icono_${Dashboard.data.username}_${Date.now()}`;
                 icon = await uploadImageToExternal(fileInput, imgName);
             } catch (err) {
                 btnSubmit.disabled = false;
                 btnSubmit.textContent = '+ Añadir al panel';
-                return alert('Hubo una falta de red al emitir la foto: ' + err.message);
+                return showToast('Error al subir icono: ' + err.message, 'error');
             }
         }
         
@@ -476,64 +475,63 @@ const Dashboard = {
 window.Settings = {
     changePassword: async () => {
         const newPassword = prompt("Digita tu nuevo pase seguro (mínimo 6 caracteres alfanuméricos):");
-        if (!newPassword || newPassword.length < 6) return alert("Cancelado o insuficiente seguridad.");
+        if (!newPassword || newPassword.length < 6) return showToast("Contraseña cancelada o insuficiente.", 'error');
         try {
             await auth.currentUser.updatePassword(newPassword);
-            alert("¡Tu contraseña ha sido reprogramada con éxito en los servidores centrales!");
+            showToast("¡Tu contraseña ha sido actualizada!", 'success');
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
-                alert("⚠️ PROTECCIÓN FIREBASE: Hace mucho abriste tu sesión. Ciérrala y devuélvete mediante acceso normal para auditar que eres el humano propietario.");
+                showToast("⚠️ Debes iniciar sesión recientemente para cambiar contraseña.", 'error');
             } else {
-                alert("Violación/Error: " + error.message);
+                showToast("Error: " + error.message, 'error');
             }
         }
     },
     changeEmail: async () => {
-        const newEmail = prompt(`Credencial en uso actual: ${auth.currentUser.email}\n\nIngresa hacia qué buzón electrónico quieres migrar todo el dominio:`);
-        if (!newEmail || !newEmail.includes('@')) return alert("Cancelaste el intento de migración.");
+        const newEmail = prompt(`Correo actual: ${auth.currentUser.email}\n\nIngresa el nuevo correo:`);
+        if (!newEmail || !newEmail.includes('@')) return showToast("Migración cancelada.", 'info');
         try {
             await auth.currentUser.verifyBeforeUpdateEmail(newEmail);
-            alert(`¡Expediente transferido!\n\nHemos despachado un paquete de transición al nuevo buzón (${newEmail}). Tus redes no van a mudarse realmente ni se perderá registro loggeado de nada... hasta que tú u otra persona entre allí y pulse el botón maestro "VERIFICAR CARTA".`);
+            showToast(`¡Verifica tu nuevo correo: ${newEmail}`, 'success');
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
-                alert("⚠️ LOG GEO-EXPIRED: Ya pasó demasiado tiempo en línea. Renueva la sesión saliendo y entrando para este permiso crucial.");
+                showToast("⚠️ Debes iniciar sesión recientemente.", 'error');
             } else {
-                alert("Firebase Exception: " + error.message);
+                showToast("Error: " + error.message, 'error');
             }
         }
     },
     verifyEmail: async () => {
         try {
             await auth.currentUser.sendEmailVerification();
-            alert("Se ha inyectado un correo blanco al servidor SMTP rumbo a " + auth.currentUser.email + ".\n\nAsegúrate fervientemente de monitorear correos 'Spam' hoy.");
+            showToast("Correo de verificación enviado. Revisa tu inbox (y spam).", 'success');
         } catch (error) {
             if (error.code === 'auth/too-many-requests') {
-                alert("La inteligencia artificial antispam de Google bloqueó tu red temporalmente por pedir demasiados emails seguidos. Tranquilízate 20 minutos.");
+                showToast("Demasiadas solicitudes. Espera 20 minutos.", 'error');
             } else {
-                alert("Caída: " + error.message);
+                showToast("Error: " + error.message, 'error');
             }
         }
     },
     deleteAccount: async () => {
-        const confirmDelete = prompt("🚨 NIVEL DE ALERTA 5 ROJO 🚨\nTe encuentras al borde de purgar toda tu base de dominios vinculados. La matriz web no perdonará este paso al vacio.\n\nEscribe el código maestro para continuar erradicando: ELIMINAR");
+        const confirmDelete = prompt("🚨 PELIGRO: Escribe 'ELIMINAR' para borrar tu cuenta permanentemente:");
         
-        if (confirmDelete !== "ELIMINAR") return alert("Secuencia Letal: ABORTADA AL INSTANTE.");
+        if (confirmDelete !== "ELIMINAR") return showToast("Eliminación cancelada.", 'info');
 
         try {
             const user = auth.currentUser;
-            // Limpiar reserva de username
             const userDoc = await db.collection('users').doc(user.uid).get();
             if (userDoc.exists && userDoc.data().username) {
                 await db.collection('usernames').doc(userDoc.data().username).delete();
             }
             await db.collection('users').doc(user.uid).delete();
             await user.delete();
-            alert("Has dejado de existir dentro del ecosistema LinkStack. \nFuerza y Honor.");
+            showToast("Cuenta eliminada. Adiós.", 'success');
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
-                alert("⚠️ CÓDIGO BARRERA: Tus cookies pasaron su umbral. Sal de la web enteramente, loggéate y detona la carga una vez adentro limpiamente.");
+                showToast("⚠️ Debes iniciar sesión recientemente para eliminar cuenta.", 'error');
             } else {
-                alert("Sobreviviste a medias. El motor devolvió: " + error.message);
+                showToast("Error: " + error.message, 'error');
             }
         }
     }

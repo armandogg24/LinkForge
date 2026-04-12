@@ -3,12 +3,22 @@ const appContainer = document.getElementById('app-container');
 const navAuth = document.getElementById('nav-auth');
 const navUser = document.getElementById('nav-user');
 
+// Toast Notification System
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+}
+
 const Views = {
     // 1. Landing Page (Hero)
     renderLanding: () => {
         appContainer.innerHTML = `
             <section class="hero glass-hero">
-                <h1>Crea tu <span class="text-gradient">Link Stack</span> gratis.</h1>
+                <h1>Crea tu <span class="text-gradient">LinkForge</span> gratis.</h1>
                 <p>Muestra todo lo que haces en un solo enlace profesional y personalizado.</p>
                 <div class="hero-btns">
                     <button id="hero-start" class="btn-primary">Empieza ahora</button>
