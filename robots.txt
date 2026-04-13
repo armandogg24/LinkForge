@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://armandogg24.github.io/LinkForge/sitemap.xml
