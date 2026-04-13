@@ -388,6 +388,8 @@ h1, h2, h3, .logo {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(255, 255, 255, 0.04);
     animation: slideUp 0.4s ease-out backwards;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
 }
 
 .link-btn:nth-child(1) { animation-delay: 0.05s; }
@@ -400,9 +402,6 @@ h1, h2, h3, .logo {
 .link-btn:nth-child(8) { animation-delay: 0.4s; }
 .link-btn:nth-child(9) { animation-delay: 0.45s; }
 .link-btn:nth-child(10) { animation-delay: 0.5s; }
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-}
 
 .link-btn:hover {
     background: var(--primary);
@@ -434,8 +433,8 @@ h1, h2, h3, .logo {
 }
 
 .link-icon {
-    width: 24px;
-    height: 24px;
+    width: 48px;
+    height: 48px;
     color: var(--primary-light);
     flex-shrink: 0;
 }
@@ -604,7 +603,7 @@ h1, h2, h3, .logo {
 }
 
 .dashboard-content .link-icon {
-    width: 24px;
+    width: 48px;
     height: 24px;
 }
 
@@ -728,7 +727,6 @@ h1, h2, h3, .logo {
         padding: 0.8rem 1.2rem;
         font-size: 0.95rem;
         border-radius: 10px;
-    }
     }
 }
 
