@@ -64,28 +64,19 @@ const Dashboard = {
             }
 
             const appContainer = document.getElementById('app-container');
-            // ... resto del renderizado igual ...
             appContainer.innerHTML = `
                 <div class="dashboard-container">
-                    <aside class="dashboard-sidebar glass">
-                        <h3>Dashboard</h3>
-                        <nav class="sidebar-nav">
-                            <button onclick="Dashboard.changeTab('links')" id="tab-links" class="tab-btn active"><i data-lucide="link"></i> Mis Enlaces</button>
-                            <button onclick="Dashboard.changeTab('profile')" id="tab-profile" class="tab-btn"><i data-lucide="user"></i> Mi Perfil</button>
-                            <button onclick="Dashboard.changeTab('vip')" id="tab-vip" class="tab-btn"><i data-lucide="zap"></i> Herramientas VIP</button>
-                            <button onclick="Dashboard.changeTab('settings')" id="tab-settings" class="tab-btn"><i data-lucide="shield-check"></i> Ajustes de Cuenta</button>
-                        </nav>
-                    </aside>
+                    <nav class="sidebar-nav">
+                        <button onclick="Dashboard.changeTab('links')" id="tab-links" class="tab-btn active"><i data-lucide="link"></i> <span>Enlaces</span></button>
+                        <button onclick="Dashboard.changeTab('profile')" id="tab-profile" class="tab-btn"><i data-lucide="user"></i> <span>Perfil</span></button>
+                        <button onclick="Dashboard.changeTab('vip')" id="tab-vip" class="tab-btn"><i data-lucide="zap"></i> <span>VIP</span></button>
+                        <button onclick="Dashboard.changeTab('settings')" id="tab-settings" class="tab-btn"><i data-lucide="shield-check"></i> <span>Ajustes</span></button>
+                    </nav>
                     <main class="dashboard-content" id="tab-content" style="position:relative;">
-                        <div class="skeleton-loader" style="padding: 2rem;">
-                            <div class="skeleton skeleton-avatar" style="margin: 0 auto 1.5rem;"></div>
-                            <div class="skeleton skeleton-text-lg" style="margin: 0 auto;"></div>
-                            <div class="skeleton skeleton-text" style="margin: 1rem auto 0;"></div>
-                            <div class="skeleton skeleton-text" style="width: 80%; margin-top: 0.5rem;"></div>
-                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                                <div class="skeleton skeleton-btn" style="flex: 1;"></div>
-                                <div class="skeleton skeleton-btn" style="flex: 1;"></div>
-                            </div>
+                        <div class="skeleton-loader" style="padding: 0.5rem;">
+                            <div class="skeleton" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 0.75rem;"></div>
+                            <div class="skeleton" style="height: 16px; width: 50%; margin: 0 auto 0.5rem;"></div>
+                            <div class="skeleton" style="height: 12px; width: 70%; margin: 0.5rem auto;"></div>
                         </div>
                     </main>
                 </div>

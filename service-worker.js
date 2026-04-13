@@ -1,4 +1,4 @@
-const CACHE_NAME = 'linkforge-v3';
+const CACHE_NAME = 'linkforge-v4';
 const ASSETS = [
   './',
   './index.html',
