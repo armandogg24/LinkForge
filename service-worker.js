@@ -1,7 +1,8 @@
-const CACHE_NAME = 'linkforge-v1';
+const CACHE_NAME = 'linkforge-v2';
 const ASSETS = [
   './',
   './index.html',
+  './privacy.html',
   './style.css',
   './firebase-config.js',
   './auth.js',

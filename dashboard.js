@@ -77,7 +77,16 @@ const Dashboard = {
                         </nav>
                     </aside>
                     <main class="dashboard-content" id="tab-content" style="position:relative;">
-                        <div class="loader" style="text-align:center; padding: 2rem;">Cargando interfaz...</div>
+                        <div class="skeleton-loader" style="padding: 2rem;">
+                            <div class="skeleton skeleton-avatar" style="margin: 0 auto 1.5rem;"></div>
+                            <div class="skeleton skeleton-text-lg" style="margin: 0 auto;"></div>
+                            <div class="skeleton skeleton-text" style="margin: 1rem auto 0;"></div>
+                            <div class="skeleton skeleton-text" style="width: 80%; margin-top: 0.5rem;"></div>
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <div class="skeleton skeleton-btn" style="flex: 1;"></div>
+                                <div class="skeleton skeleton-btn" style="flex: 1;"></div>
+                            </div>
+                        </div>
                     </main>
                 </div>
             `;
@@ -107,6 +116,10 @@ const Dashboard = {
 
             const content = document.getElementById('tab-content');
             if (!content) return;
+            
+            content.classList.remove('tab-content-enter');
+            void content.offsetWidth;
+            content.classList.add('tab-content-enter');
             
             // Ruteros internos
             switch(tabName) {
