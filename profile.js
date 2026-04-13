@@ -46,7 +46,7 @@ const Profile = {
                         // Enlace estándar con icono sanitizado
                         const cleanIcon = safeIcon(link.icon);
                         const iconHtml = (cleanIcon && cleanIcon.startsWith('http')) 
-                            ? `<img src="${safeURL(cleanIcon)}" style="width: 20px; height: 20px; border-radius: 4px; object-fit: cover; display: inline-block; vertical-align: middle; margin-right: 8px;">`
+                            ? `<img src="${safeURL(cleanIcon)}" style="width: 48px; height: 48px; border-radius: 4px; object-fit: cover; display: inline-block; vertical-align: middle; margin-right: 8px;">`
                             : `<i data-lucide="${cleanIcon}" style="display: inline-block; vertical-align: middle; margin-right: 8px;"></i>`;
 
                         return `
