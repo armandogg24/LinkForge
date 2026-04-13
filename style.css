@@ -636,7 +636,7 @@ border-radius: 16px;
 }
 
 .tab-btn span {
-    display: none;
+    display: inline;
 }
 
 .tab-btn i {
@@ -724,18 +724,6 @@ border-radius: 16px;
     .tab-btn i {
         width: 14px !important;
         height: 14px !important;
-    }
-}
-
-@media (min-width: 481px) {
-    .tab-btn span {
-        display: inline;
-    }
-
-    .tab-btn {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.75rem;
-        flex: 1 0 auto;
     }
 }
 
