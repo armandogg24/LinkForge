@@ -434,9 +434,10 @@ h1, h2, h3, .logo {
 }
 
 .link-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     color: var(--primary-light);
+    flex-shrink: 0;
 }
 
 .video-container {
@@ -603,8 +604,8 @@ h1, h2, h3, .logo {
 }
 
 .dashboard-content .link-icon {
-    width: 14px;
-    height: 14px;
+    width: 24px;
+    height: 24px;
 }
 
 .dashboard-content .btn-primary,
@@ -649,23 +650,31 @@ h1, h2, h3, .logo {
 }
 
 @media (min-width: 769px) {
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 1.5rem;
+        max-width: 1100px;
+    }
+    
     .sidebar-nav {
-        flex-wrap: wrap;
-        overflow-x: visible;
-        background: transparent;
-        border: none;
-        padding: 0;
+        display: flex;
+        flex-direction: column;
         gap: 0.5rem;
+        padding: 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
     }
     
     .tab-btn {
         width: 100%;
         text-align: left;
         justify-content: flex-start;
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+        background: transparent;
+        border: 1px solid transparent;
         border-radius: 10px;
         flex: none;
     }
@@ -679,52 +688,47 @@ h1, h2, h3, .logo {
         height: 18px !important;
     }
     
-    .dashboard-container {
-        display: grid;
-        grid-template-columns: 220px 1fr;
-        gap: 1.5rem;
-    }
-    
     .dashboard-content {
         padding: 1.5rem;
-        min-height: 400px;
+        min-height: 450px;
         border-radius: 16px;
     }
     
     .dashboard-content h3 {
         margin-bottom: 1.5rem;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         text-align: left;
     }
     
     .dashboard-content .input-field {
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+        padding: 0.9rem;
+        margin-bottom: 1.2rem;
+        font-size: 1rem;
         border-radius: 10px;
     }
     
     .dashboard-content .link-item {
-        padding: 0.75rem;
-        border-radius: 10px;
+        padding: 1rem;
+        border-radius: 12px;
         margin-bottom: 0.75rem;
     }
     
     .dashboard-content .link-info {
         gap: 0.75rem;
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
     
     .dashboard-content .link-icon {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
     
     .dashboard-content .btn-primary,
     .dashboard-content .btn-secondary {
-        padding: 0.7rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.95rem;
         border-radius: 10px;
+    }
     }
 }
 
